@@ -1,5 +1,14 @@
+import Link from 'next/link';
+
 const Success = () => {
-  return 'Data sent to DB';
+  return (
+    <>
+      <p>Data sent to DB</p>
+      <Link href="/">
+        <a>Home</a>
+      </Link>
+    </>
+  );
 };
 
 export default Success;

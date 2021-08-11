@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import FormInput from './FormInput';
@@ -28,8 +28,6 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
         body: JSON.stringify(form),
       });
 
-      console.log(res.body);
-
       // Throw error with status code in case Fetch API req failed
       if (!res.ok) {
         throw new Error(res.status);
@@ -38,7 +36,6 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
       router.push('/success');
     } catch (error) {
       setMessage('Failed to add recipe');
-      console.log(error);
     }
   };
 
@@ -74,6 +71,7 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
     event.preventDefault();
 
     const errs = formValidate();
+    console.log(errs);
 
     /*
      * Not needed yet, we are not yet editing lists
@@ -88,7 +86,7 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
     if (Object.keys(errs).length === 0) {
       postData(form);
     } else {
-      setErrors({ errs });
+      setErrors({ ...errs });
     }
   };
 
@@ -105,7 +103,7 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
         <div>
           <label htmlFor="recipe-name">What are you cooking?</label>
           <input
-            id="recipe-name-id"
+            id="recipe-name"
             type="text"
             name="recipe_name"
             value={form.recipe_name}
@@ -115,7 +113,7 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
 
         {form.ingredients.map((item, index) => {
           return (
-            <div className="ingredient" key={`${item}-${index}`}>
+            <div className="ingredient" key={`${index}`}>
               <FormInput
                 value={item.ingredient}
                 onChange={(event) => handleIngredient(event, index)}
@@ -136,11 +134,12 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
         <button type="submit">Create Recipe</button>
       </form>
       <p>{message}</p>
-      <div>
+      <ul>
         {Object.keys(errors).map((err, index) => (
-          <li key={index}>{err}</li>
+          <li key={index}>{errors[err]}</li>
         ))}
-      </div>
+        {console.log(errors)}
+      </ul>
     </>
   );
 };
