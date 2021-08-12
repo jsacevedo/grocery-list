@@ -7,7 +7,9 @@ const NewRecipe = () => {
     ingredients: [{ ingredient: '' }],
   };
 
-  return <Form formId="add-new-recipe" recipeForm={recipeForm} />;
+  return (
+    <Form formId="add-new-recipe" recipeForm={recipeForm} forNewRecipe={true} />
+  );
 };
 
 export default NewRecipe;

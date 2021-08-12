@@ -1,6 +1,6 @@
 import dbConnect from '../../../lib/dbConnect';
 
-import Pet from '../../../models/Recipe';
+import Recipe from '../../../models/Recipe';
 
 export default async function handler(req, res) {
   const {
@@ -20,6 +20,22 @@ export default async function handler(req, res) {
           return res.status(400).json({ success: false });
         }
 
+        res.status(200).json({ success: true, data: recipe });
+      } catch (error) {
+        res.status(400).json({ success: false });
+      }
+      break;
+
+    /* Edit a model by its ID */
+    case 'PUT':
+      try {
+        const recipe = await Recipe.findByIdAndUpdate(id, req.body, {
+          new: true,
+          runValidators: true,
+        });
+        if (!recipe) {
+          return res.status(400).json({ success: false });
+        }
         res.status(200).json({ success: true, data: recipe });
       } catch (error) {
         res.status(400).json({ success: false });

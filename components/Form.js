@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { mutate } from 'swr';
 
 import FormInput from './FormInput';
 
-const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
+const Form = ({ formId, recipeForm, forNewRecipe }) => {
   const router = useRouter();
   const contentType = 'application/json';
 
@@ -16,7 +17,36 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
     ingredients: recipeForm.ingredients,
   });
 
-  /* The POST method adds a new entry in the mongodb database. */
+  /* PUT - edit an existing entry in the mongodb database. */
+  const putData = async (form) => {
+    const { id } = router.query;
+
+    try {
+      const res = await fetch(`/api/recipes/${id}`, {
+        method: 'PUT',
+        headers: {
+          Accept: contentType,
+          'Content-Type': contentType,
+        },
+        body: JSON.stringify(form),
+      });
+
+      // throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      const { data } = await res.json();
+
+      // Update the local data without a revalidation
+      mutate(`/api/recipes/${id}`, data, false);
+      router.push('/');
+    } catch (error) {
+      setMessage('Failed to update recipe');
+    }
+  };
+
+  /* POST- adds a new entry in the mongodb database. */
   const postData = async (form) => {
     try {
       const res = await fetch('/api/recipes', {
@@ -71,20 +101,9 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
     event.preventDefault();
 
     const errs = formValidate();
-    console.log(errs);
 
-    /*
-     * Not needed yet, we are not yet editing lists
     if (Object.keys(errs).length === 0) {
       forNewRecipe ? postData(form) : putData(form);
-    } else {
-      setErrors({ errs });
-    }
-    */
-
-    // When we add editing, this will be eliminated and the forNewRecipe above will be used
-    if (Object.keys(errs).length === 0) {
-      postData(form);
     } else {
       setErrors({ ...errs });
     }
@@ -138,7 +157,6 @@ const Form = ({ formId, recipeForm, forNewRecipe = true }) => {
         {Object.keys(errors).map((err, index) => (
           <li key={index}>{errors[err]}</li>
         ))}
-        {console.log(errors)}
       </ul>
     </>
   );
