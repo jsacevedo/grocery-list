@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { mutate } from 'swr';
 
 import FormInput from './FormInput';
@@ -151,6 +152,13 @@ const Form = ({ formId, recipeForm, forNewRecipe }) => {
           );
         })}
         <button type="submit">Create Recipe</button>
+        {!forNewRecipe ? (
+          <Link href="/">
+            <button type="button">Cancel</button>
+          </Link>
+        ) : (
+          ''
+        )}
       </form>
       <p>{message}</p>
       <ul>

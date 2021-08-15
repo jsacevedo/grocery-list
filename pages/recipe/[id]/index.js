@@ -2,12 +2,24 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-import dbConnect from '../../lib/dbConnect';
-import Recipe from '../../models/Recipe';
+import dbConnect from '../../../lib/dbConnect';
+import Recipe from '../../../models/Recipe';
 
 const RecipePage = ({ recipe }) => {
   const router = useRouter();
   const [message, setMessage] = useState('');
+  const handleDelete = async () => {
+    const recipeId = router.query.id;
+
+    try {
+      await fetch(`/api/recipes/${recipeId}`, {
+        method: 'Delete',
+      });
+      router.push('/');
+    } catch (error) {
+      setMessage('Failed to delete the recipe.');
+    }
+  };
 
   return (
     <div key={recipe._id}>
@@ -17,10 +29,12 @@ const RecipePage = ({ recipe }) => {
           <li key={index}>{Object.values(data)}</li>
         ))}
       </ul>
-      <Link href="/[id]/edit" as={`/${recipe._id}/edit`}>
+      <Link href="/recipe/[id]/edit" as={`/recipe/${recipe._id}/edit`}>
         <button type="button">Edit</button>
       </Link>
-      <button type="button">Delete</button>
+      <button type="button" onClick={handleDelete}>
+        Delete
+      </button>
       <button type="button">Add</button>
       {message && <p>{message}</p>}
     </div>
