@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import useSWR from 'swr';
 
+// Import components
 import Form from '../../../components/Form';
 
 const fetcher = (url) =>
@@ -26,11 +28,16 @@ const EditRecipe = () => {
   };
 
   return (
-    <Form
-      formId="edit-recipe-form"
-      recipeForm={recipeForm}
-      forNewRecipe={false}
-    />
+    <>
+      <Head>
+        <title>Grocery List | {recipe.recipe_name}</title>
+      </Head>
+      <Form
+        formId="edit-recipe-form"
+        recipeForm={recipeForm}
+        forNewRecipe={false}
+      />
+    </>
   );
 };
 

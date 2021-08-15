@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Head from 'next/head';
 
 import dbConnect from '../../../lib/dbConnect';
 import Recipe from '../../../models/Recipe';
@@ -22,22 +23,27 @@ const RecipePage = ({ recipe }) => {
   };
 
   return (
-    <div key={recipe._id}>
-      {recipe.recipe_name}
-      <ul>
-        {recipe.ingredients.map((data, index) => (
-          <li key={index}>{Object.values(data)}</li>
-        ))}
-      </ul>
-      <Link href="/recipe/[id]/edit" as={`/recipe/${recipe._id}/edit`}>
-        <button type="button">Edit</button>
-      </Link>
-      <button type="button" onClick={handleDelete}>
-        Delete
-      </button>
-      <button type="button">Add</button>
-      {message && <p>{message}</p>}
-    </div>
+    <>
+      <Head>
+        <title>Grocery List | {recipe.recipe_name}</title>
+      </Head>
+      <div key={recipe._id}>
+        {recipe.recipe_name}
+        <ul>
+          {recipe.ingredients.map((data, index) => (
+            <li key={index}>{Object.values(data)}</li>
+          ))}
+        </ul>
+        <Link href="/recipe/[id]/edit" as={`/recipe/${recipe._id}/edit`}>
+          <button type="button">Edit</button>
+        </Link>
+        <button type="button" onClick={handleDelete}>
+          Delete
+        </button>
+        <button type="button">Add</button>
+        {message && <p>{message}</p>}
+      </div>
+    </>
   );
 };
 

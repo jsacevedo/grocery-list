@@ -1,21 +1,15 @@
 import Head from 'next/head';
-import Link from 'next/link';
 
+import Header from '../components/Header';
 import '../styles/globals.scss';
 
 function GroceryListApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Grocery List App</title>
+        <title>Grocery List</title>
       </Head>
-      <header>
-        <nav>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-        </nav>
-      </header>
+      <Header />
       <Component {...pageProps} />
     </>
   );
